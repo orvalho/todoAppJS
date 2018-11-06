@@ -7,3 +7,6 @@
 - [x] clicking 'Add' button should create a new todo
 - [x] pressing Enter key should create a new todo
 - [x] after new todo is added the input field should be cleared
+
+## Display todos
+- [x] each todo should be displayed on the screen

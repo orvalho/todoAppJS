@@ -19,10 +19,23 @@ const handlers = {
       todoList.addTodo(addTodoTextInput.value.trim()); //trim input
     }
     addTodoTextInput.value = ''; //clear input
+    view.displayTodo();
   }
 };
 
 const view = {
+  displayTodo: function() {
+    const todosUl = document.getElementById('todoItems');
+    //clear todos shown on a screen before looping through todo list
+    todosUl.textContent = '';
+    todoList.todos.forEach((todo, position) => {
+      const todoLi = document.createElement('li');
+      todoLi.className = 'todoItem';
+      todoLi.id = position;
+      todoLi.textContent = todo.todoText;
+      todosUl.appendChild(todoLi);
+    });
+  },
   setUpEventListeners: function() {
 
     //listener for button which user clicks to add a new todo
