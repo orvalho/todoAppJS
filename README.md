@@ -10,3 +10,7 @@
 
 ## Display todos
 - [x] each todo should be displayed on the screen
+
+## Mark todo as completed
+- [x] toggling the checkbox should mark the todo as completed/ not completed
+- [x] completed todo should be displayed with strikethrough

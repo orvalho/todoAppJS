@@ -5,9 +5,13 @@ const todoList = {
   addTodo: function(todoText) {
     this.todos.push(
       {
-        todoText: todoText
+        todoText: todoText,
+        completed: false
       }
     );
+  },
+  toggleCompleted: function(position) {
+    this.todos[position].completed = !this.todos[position].completed;
   }
 };
 
@@ -19,6 +23,10 @@ const handlers = {
       todoList.addTodo(addTodoTextInput.value.trim()); //trim input
     }
     addTodoTextInput.value = ''; //clear input
+    view.displayTodo();
+  },
+  toggleCompleted: function(position) {
+    todoList.toggleCompleted(position);
     view.displayTodo();
   }
 };
@@ -32,9 +40,25 @@ const view = {
       const todoLi = document.createElement('li');
       todoLi.className = 'todoItem';
       todoLi.id = position;
-      todoLi.textContent = todo.todoText;
+      const todoLabel = document.createElement('label');
+      todoLabel.className = 'todoText';
+      todoLabel.textContent = todo.todoText;
+      if(todo.completed === false) {
+        todoLi.appendChild(this.createCompletedCheckbox(false));
+      } else {
+        todoLi.appendChild(this.createCompletedCheckbox(true));
+        todoLi.className += ' completed';
+      }
+      todoLi.appendChild(todoLabel);
       todosUl.appendChild(todoLi);
     });
+  },
+  createCompletedCheckbox: function(isChecked) {
+    const checkbox = document.createElement('input');
+    checkbox.setAttribute('type', 'checkbox');
+    checkbox.className = 'completedCheckbox';
+    checkbox.checked = isChecked;
+    return checkbox;
   },
   setUpEventListeners: function() {
 
@@ -58,6 +82,16 @@ const view = {
       }, 20);
     });
 
+    const todosUl = document.getElementById('todoItems');
+    todosUl.addEventListener('click', function(e) {
+      const elementClicked = e.target;
+      switch(elementClicked.className) {
+        //listener for checkbox to toggle completed state
+        case 'completedCheckbox':
+          handlers.toggleCompleted(parseInt(elementClicked.parentNode.id));
+          break;
+      }
+    });
   }
 };
 
