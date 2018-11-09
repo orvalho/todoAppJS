@@ -1,3 +1,7 @@
 .completed label {
   text-decoration: line-through;
 }
+
+#todoItems {
+  list-style-type: none;
+}

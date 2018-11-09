@@ -14,3 +14,8 @@
 ## Mark todo as completed
 - [x] toggling the checkbox should mark the todo as completed/ not completed
 - [x] completed todo should be displayed with strikethrough
+
+## Mark all todos as completed
+- [x] if none, one or some (but not all) of single checkboxes are checked clicking the "Mark all as completed" checkbox should check all single checkboxes and the "Mark all as completed" checkbox itself
+- [x] if all single checkboxes are checked clicking the "Mark all as completed" checkbox should uncheck all single checkboxes and the "Mark all as completed" checkbox itself
+- [x] the "Mark all as completed" checkbox should be checked when all individual checkboxes are checked and unchecked when at least one of single checkboxes are unchecked.
