@@ -19,3 +19,7 @@
 - [x] if none, one or some (but not all) of single checkboxes are checked clicking the "Mark all as completed" checkbox should check all single checkboxes and the "Mark all as completed" checkbox itself
 - [x] if all single checkboxes are checked clicking the "Mark all as completed" checkbox should uncheck all single checkboxes and the "Mark all as completed" checkbox itself
 - [x] the "Mark all as completed" checkbox should be checked when all individual checkboxes are checked and unchecked when at least one of single checkboxes are unchecked.
+
+## Delete todo
+- [x] hovering over the todo should show the delete button
+- [x] clicking the delete button should remove the todo

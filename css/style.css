@@ -5,3 +5,7 @@
 #todoItems {
   list-style-type: none;
 }
+
+.deleteButton {
+  display: none;
+}

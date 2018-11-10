@@ -45,6 +45,9 @@ const todoList = {
         todo.completed = true;
       }
     });
+  },
+  deleteTodo: function(position) {
+    this.todos.splice(position, 1);
   }
 };
 
@@ -67,6 +70,16 @@ const handlers = {
   toggleAll: function() {
     todoList.toggleAll();
     view.displayTodo();
+  },
+  deleteTodo: function(position) {
+    todoList.deleteTodo(position);
+    view.displayTodo();
+  },
+  showDeleteButton: function(position) {
+    document.getElementsByClassName('deleteButton')[position].style.display = 'inline';
+  },
+  hideDeleteButton: function(position) {
+    document.getElementsByClassName('deleteButton')[position].style.display = 'none';
   }
 };
 
@@ -89,6 +102,7 @@ const view = {
         todoLi.className += ' completed';
       }
       todoLi.appendChild(todoLabel);
+      todoLi.appendChild(this.createDeleteButton());
       todosUl.appendChild(todoLi);
     });
   },
@@ -121,6 +135,12 @@ const view = {
     checkbox.id = 'toggleAllCheckbox';
     return checkbox;
   },
+  createDeleteButton: function() {
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'deleteButton';
+    deleteButton.textContent = 'Delete';
+    return deleteButton;
+  },
   setUpEventListeners: function() {
 
     //listener for button which user clicks to add a new todo
@@ -151,6 +171,31 @@ const view = {
         case 'toggleCompletedCheckbox':
           handlers.toggleCompleted(parseInt(elementClicked.parentNode.id));
           break;
+        //listener for delete button to delete a single todo
+        case 'deleteButton':
+          handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
+          break;
+      }
+    });
+
+    // show delete button when user mouseover li element or its children
+    todosUl.addEventListener('mouseover', function(e) {
+      const element = e.target;
+      if(element.parentElement.classList.contains('todoItem')) {
+        handlers.showDeleteButton(parseInt(element.parentElement.id));
+      }
+      if(element.classList.contains('todoItem')) {
+        handlers.showDeleteButton(parseInt(element.id));
+      }
+    });
+    // hide delete button when user mouseout li element or its children
+    todosUl.addEventListener('mouseout', function(e) {
+      const element = e.target;
+      if(element.parentElement.classList.contains('todoItem')) {
+        handlers.hideDeleteButton(parseInt(element.parentElement.id));
+      }
+      if(element.classList.contains('todoItem')) {
+        handlers.hideDeleteButton(parseInt(element.id));
       }
     });
 
