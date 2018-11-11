@@ -23,3 +23,7 @@
 ## Delete todo
 - [x] hovering over the todo should show the delete button
 - [x] clicking the delete button should remove the todo
+
+## Delete completed todos
+- [x] clicking the "Delete completed" button should remove completed todos
+- [x] the "Delete completed" button should be hidden when there are no completed todos

@@ -48,6 +48,13 @@ const todoList = {
   },
   deleteTodo: function(position) {
     this.todos.splice(position, 1);
+  },
+  deleteCompletedTodos: function() {
+    for(let i = this.todos.length - 1; i > -1; i--) {
+        if(this.todos[i].completed) {
+          this.deleteTodo(i);
+        }
+    }
   }
 };
 
@@ -66,20 +73,30 @@ const handlers = {
     todoList.toggleCompleted(position);
     view.displayTodo();
     view.displayToggleAllCheckbox();
+    view.displayFooter();
   },
   toggleAll: function() {
     todoList.toggleAll();
     view.displayTodo();
+    view.displayFooter();
   },
   deleteTodo: function(position) {
     todoList.deleteTodo(position);
     view.displayTodo();
+    view.displayToggleAllCheckbox();
+    view.displayFooter();
   },
   showDeleteButton: function(position) {
     document.getElementsByClassName('deleteButton')[position].style.display = 'inline';
   },
   hideDeleteButton: function(position) {
     document.getElementsByClassName('deleteButton')[position].style.display = 'none';
+  },
+  deleteCompletedTodos: function() {
+    todoList.deleteCompletedTodos();
+    view.displayTodo();
+    view.displayFooter();
+    view.displayToggleAllCheckbox();
   }
 };
 
@@ -106,8 +123,23 @@ const view = {
       todosUl.appendChild(todoLi);
     });
   },
+  displayFooter: function() {
+      const footer = document.getElementById('footer');
+      const deleteCompletedButton = document.getElementById('deleteCompletedButton')
+      const todosCount = todoList.countTodos();
+      if(deleteCompletedButton === null && todosCount.completedTodos > 0) {
+        footer.appendChild(this.createDeleteCompletedButton());
+      } else if(deleteCompletedButton && todosCount.completedTodos === 0) {
+        deleteCompletedButton.parentNode.removeChild(deleteCompletedButton);
+      }
+  },
   displayToggleAllCheckbox: function() {
     const toggleAllCheckbox = document.getElementById('toggleAllCheckbox');
+
+    if(toggleAllCheckbox && todoList.todos.length === 0) {
+      toggleAllCheckbox.parentNode.removeChild(toggleAllCheckbox);
+    }
+
     if(toggleAllCheckbox === null) {
       const addTodoContainer = document.getElementById('addTodoContainer');
       addTodoContainer.insertBefore(this.createToggleAllCheckbox(), addTodoContainer.childNodes[0]);
@@ -140,6 +172,12 @@ const view = {
     deleteButton.className = 'deleteButton';
     deleteButton.textContent = 'Delete';
     return deleteButton;
+  },
+  createDeleteCompletedButton: function() {
+    const deleteCompletedButton = document.createElement('button');
+    deleteCompletedButton.id = 'deleteCompletedButton';
+    deleteCompletedButton.textContent = 'Delete completed';
+    return deleteCompletedButton;
   },
   setUpEventListeners: function() {
 
@@ -203,6 +241,13 @@ const view = {
     addTodoContainer.addEventListener('click', function(e) {
       if(e.target.id === 'toggleAllCheckbox') {
       handlers.toggleAll();
+      }
+    });
+
+    //listener for delete completed todos button
+    footer.addEventListener('click', function(e) {
+      if(e.target.id === 'deleteCompletedButton') {
+        handlers.deleteCompletedTodos();
       }
     });
   }
