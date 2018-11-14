@@ -1,7 +1,7 @@
 # Functionality
 
 ## Add new todo
-- [x] the input field should automatically get focus when the page loads and maintain it
+- [x] the input field should automatically get focus when the page loads and maintain it (except when existing todo is in process of editing)
 - [x] the input should be trimmed before submitting it
 - [x] before creating a new todo it should be checked that input is not empty
 - [x] clicking 'Add' button should create a new todo
@@ -27,3 +27,11 @@
 ## Delete completed todos
 - [x] clicking the "Delete completed" button should remove completed todos
 - [x] the "Delete completed" button should be hidden when there are no completed todos
+
+## Edit todo
+- [x] double clicking on todo text should activate editing mode
+- [x] double clicking on a row that contains todo should activate editing mode
+- [x] when editing mode is activated it should bring forward an input that contains todo text
+- [x] input should be focused
+- [x] the edit should be saved on enter
+- [x] The edit should be saved on blur

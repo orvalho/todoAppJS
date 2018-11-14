@@ -55,6 +55,9 @@ const todoList = {
           this.deleteTodo(i);
         }
     }
+  },
+  editTodo: function(position, todoText) {
+    this.todos[position].todoText = todoText;
   }
 };
 
@@ -97,6 +100,10 @@ const handlers = {
     view.displayTodo();
     view.displayFooter();
     view.displayToggleAllCheckbox();
+  },
+  editTodo: function(position, todoText) {
+    todoList.editTodo(position, todoText);
+    view.displayTodo();
   }
 };
 
@@ -179,6 +186,18 @@ const view = {
     deleteCompletedButton.textContent = 'Delete completed';
     return deleteCompletedButton;
   },
+  createEditTodoInputField: function(value) {
+    const editTodoInputField = document.createElement('input');
+    editTodoInputField.setAttribute('type', 'text');
+    editTodoInputField.className = 'editTodoInputField';
+    editTodoInputField.value = value;
+    return editTodoInputField;
+  },
+  replaceLabelWithEditTodoInputField: function (oldElement, oldElementValue) {
+    const newElement = view.createEditTodoInputField(oldElementValue);
+    oldElement.parentNode.replaceChild(newElement, oldElement);
+  },
+
   setUpEventListeners: function() {
 
     //listener for button which user clicks to add a new todo
@@ -194,12 +213,14 @@ const view = {
       }
     });
 
-    //listener for input field to prevent it from losing focus
-    addTodoTextInput.addEventListener('blur', function() {
-      setTimeout(function() {
-        addTodoTextInput.focus();
-      }, 20);
-    });
+    // prevent add todo input field from losing focus (except when existing todo is in process of editing)
+    setInterval(function() {
+        if(document.querySelector('.editTodoInputField') === null) {
+          addTodoTextInput.focus();
+        } else {
+          document.querySelector('.editTodoInputField').focus();
+        }
+      }, 500);
 
     const todosUl = document.getElementById('todoItems');
     todosUl.addEventListener('click', function(e) {
@@ -249,6 +270,31 @@ const view = {
       if(e.target.id === 'deleteCompletedButton') {
         handlers.deleteCompletedTodos();
       }
+    });
+
+    todosUl.addEventListener('dblclick', function(e) {
+      //listener for creating input field for editing when dbl clicking on todo text
+      if(e.target.className === 'todoText') {
+        view.replaceLabelWithEditTodoInputField(e.target, e.target.textContent);
+      }
+      //listener for creating input field for editing when dbl clicking on <li> itself
+      if(e.target.classList.contains('todoItem')) {
+        view.replaceLabelWithEditTodoInputField(e.target.querySelector('.todoText'), e.target.querySelector('.todoText').textContent);
+      }
+    });
+
+    //listener for edit todo input field to update todo text on Enter keyup event
+    todosUl.addEventListener('keyup', function(e) {
+        if(e.target.className === 'editTodoInputField' && e.keyCode === 13) {
+            handlers.editTodo(e.target.parentNode.id, e.target.value);
+        }
+    });
+
+    //listener for edit todo input field to update todo text on focusout event
+    todosUl.addEventListener('focusout', function(e) {
+        if(e.target.className === 'editTodoInputField') {
+            handlers.editTodo(e.target.parentNode.id, e.target.value);
+        }
     });
   }
 };
