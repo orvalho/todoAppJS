@@ -34,4 +34,9 @@
 - [x] when editing mode is activated it should bring forward an input that contains todo text
 - [x] input should be focused
 - [x] the edit should be saved on enter
-- [x] The edit should be saved on blur
+- [x] the edit should be saved on blur
+- [x] the input should be trimmed before submitting it
+- [x] if empty - todo should be destroyed
+- [x] if escape key is pushed during editing mode original value should be left
+- [x] hide delete button when todo item is in editing mode
+- [x] hide toggle completed checkbox when todo item is in editing mode

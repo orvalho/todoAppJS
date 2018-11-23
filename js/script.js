@@ -95,6 +95,9 @@ const handlers = {
   hideDeleteButton: function(position) {
     document.getElementsByClassName('deleteButton')[position].style.display = 'none';
   },
+  hideToggleCompletedCheckbox: function(position) {
+    document.getElementsByClassName('toggleCompletedCheckbox')[position].style.visibility = 'hidden';
+  },
   deleteCompletedTodos: function() {
     todoList.deleteCompletedTodos();
     view.displayTodo();
@@ -102,7 +105,16 @@ const handlers = {
     view.displayToggleAllCheckbox();
   },
   editTodo: function(position, todoText) {
-    todoList.editTodo(position, todoText);
+    const trimmedTodoText = todoText.trim();
+    if(trimmedTodoText !== '') {
+      todoList.editTodo(position, trimmedTodoText);
+      view.displayTodo();
+    } else {
+      this.deleteTodo(position);
+    }
+  },
+  cancelEditingTodo: function(e) {
+    e.target.value = todoList.todos[e.target.parentNode.id].todoText;
     view.displayTodo();
   }
 };
@@ -258,6 +270,26 @@ const view = {
       }
     });
 
+    // hide delete button when todo item is in editing mode
+    todosUl.addEventListener('mouseover', function(e) {
+      if(e.target.classList.contains('todoItem') && e.target.querySelector('.editTodoInputField')) {
+        handlers.hideDeleteButton(parseInt(e.target.id));
+      }
+      else if(e.target.classList.contains('editTodoInputField')) {
+        handlers.hideDeleteButton(parseInt(e.target.parentElement.id));
+      }
+    });
+
+    // hide checkbox when todo item is in editing mode
+    todosUl.addEventListener('mouseover', function(e) {
+      if(e.target.classList.contains('todoItem') && e.target.querySelector('.editTodoInputField')) {
+        handlers.hideToggleCompletedCheckbox(parseInt(e.target.id));
+      }
+      else if(e.target.classList.contains('editTodoInputField')) {
+        handlers.hideToggleCompletedCheckbox(parseInt(e.target.parentElement.id));
+      }
+    });
+
     //listener for toggle all checkbox
     addTodoContainer.addEventListener('click', function(e) {
       if(e.target.id === 'toggleAllCheckbox') {
@@ -283,17 +315,34 @@ const view = {
       }
     });
 
-    //listener for edit todo input field to update todo text on Enter keyup event
-    todosUl.addEventListener('keyup', function(e) {
+    // prevent edit todo function from firing twice (once on enter and again on focus out)
+    let timeEnterPressed = 0;
+
+    const saveEditedTodoOnEnter = function(e) {
         if(e.target.className === 'editTodoInputField' && e.keyCode === 13) {
+          timeEnterPressed = Date.now();
+          handlers.editTodo(e.target.parentNode.id, e.target.value);
+        }
+    };
+
+    //listener for edit todo input field to update todo text on Enter keyup event
+    todosUl.addEventListener('keyup', saveEditedTodoOnEnter);
+
+
+    const saveEditedTodoOnFocusout = function(e) {
+        if(e.target.className === 'editTodoInputField' && Date.now() - timeEnterPressed > 10) {
+          console.log(Date.now() - timeEnterPressed);
             handlers.editTodo(e.target.parentNode.id, e.target.value);
         }
-    });
+    };
 
     //listener for edit todo input field to update todo text on focusout event
-    todosUl.addEventListener('focusout', function(e) {
-        if(e.target.className === 'editTodoInputField') {
-            handlers.editTodo(e.target.parentNode.id, e.target.value);
+    todosUl.addEventListener('focusout', saveEditedTodoOnFocusout);
+
+    //listener for edit todo input field to cancel editing on Esc keyup event
+    todosUl.addEventListener('keyup', function(e) {
+        if(e.target.className === 'editTodoInputField' && e.key === 'Escape') {
+          handlers.cancelEditingTodo(e);
         }
     });
   }
